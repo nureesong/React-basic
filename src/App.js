@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useRef, useCallback} from 'react';
 
-function App() {
+import './App.css';
+import CourseInput from "./components/CourseGoals/CourseInput/CourseInput";
+import CourseGoalList from "./components/CourseGoals/CourseGoalList/CourseGoalList";
+
+const App = () => {
+  // [getter, setter] = useState(상태의 기본값)
+  const [courseGoals, setCourseGoals] = useState([
+    { text: 'Do all exercises!', id: 'g1' },
+    { text: 'Finish the course!', id: 'g2' }
+  ]);
+
+  //===========================================
+  const goalId = useRef(3);
+
+  const addTodo = useCallback((text) => {
+    const todo = {
+      text: text,
+      id: 'g' + goalId.current++
+    };
+    setCourseGoals((courseGoals) => [todo, ...courseGoals]);
+  }, []);
+
+  const deleteTodo = useCallback((id) => {
+    setCourseGoals((courseGoals) => courseGoals.filter(todo => todo.id !== id))
+  }, []);
+  //==========================================
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <section id="goal-form">
+        <CourseInput addTodo={addTodo}/>
+      </section>
+      <section id="goals">
+	      <CourseGoalList goalList={courseGoals} deleteTodo={deleteTodo}/>
+      </section>
     </div>
   );
-}
+};
 
 export default App;
